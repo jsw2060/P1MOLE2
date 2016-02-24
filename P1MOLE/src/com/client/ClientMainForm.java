@@ -152,7 +152,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 				// TODO Auto-generated method stub
 				// 예외처리
 				try {
-					UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
+					UIManager.setLookAndFeel("com.jtattoo.plaf.mcwin.McWinLookAndFeel");
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}

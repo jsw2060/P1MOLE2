@@ -292,14 +292,21 @@ public class Server implements Runnable {
 							// 들어가는 사람 처리
 							int k=0;
 							for(ClientThread client:room.userVc)
-							{
-								if(id.equals(client.id))
-								{
-									messageTo(Function.MYROOMOUT+"|");
-									room.userVc.removeElementAt(k);
-								}
-								k++;
-							}
+	                        {
+	                           System.out.println("zzzzzz->client room out4");
+	                           ClientThread user=room.userVc.elementAt(i);
+	                           if(id.equals(client.id))
+	                           {
+	                              messageTo(Function.MYROOMOUT+"|");
+	                              System.out.println("zzzzzz->client room out3");
+	                              room.userVc.removeElementAt(k);
+	                              break;
+	                           }
+	                           System.out.println("zzzzzz->client room out5");
+	                           k++;
+	                        }
+							
+							System.out.println("for문 나옴");
 							messageAll(Function.WAITUPDATE+"|"
 									+room.roomName+"|"
 									+room.current+"|"
