@@ -22,7 +22,7 @@ public class GameOver extends JDialog{
 		hammerImg=Toolkit.getDefaultToolkit().getImage("image/01.png");
 		cursor=Toolkit.getDefaultToolkit().createCustomCursor(hammerImg, new Point(0,0), "null");
 		this.setCursor(cursor);
-		gameOverImg=new ImageIcon("image/GameOver.jpg");
+		gameOverImg=new ImageIcon("image/GameOver.png");
 		
 		JPanel jPanel=new JPanel(){
 
