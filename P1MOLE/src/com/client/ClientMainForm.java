@@ -377,7 +377,24 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 				indianInk.m_timer=2;	//초기 threadhold값으로 재설정.
 				indianInk.setVisible(false);
 			}
-		}			
+		}
+		
+		// 타이머 관련 이벤트 처리 
+		if(moleGameView.timer==e.getSource()){
+			if(0<moleGameView.timerVar){
+				moleGameView.timerVar--;
+				moleGameView.repaint();
+			}else if(0==moleGameView.timerVar){
+				moleGameView.timer.stop();
+				moleGameView.thread.interrupt();
+				moleGameView.moleImage=moleGameView.molesImage[4];
+				moleGameView.repaint();
+				
+				//게임오버 창 띄우기
+				
+			}
+		}
+		
 	}
 
 	@Override
