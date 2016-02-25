@@ -170,6 +170,15 @@ public class Server implements Runnable {
 		   							     +room.roomName+"|"
 		   							     +room.roomBang);
 		    					messageAll(Function.POSCHANGE+"|"+id+"|"+pos);
+		    					
+		    					 int tmpRow;
+		    		               for(tmpRow=0;tmpRow<waitVc.size();tmpRow++)
+		    		               {
+		    		                  ClientThread client=waitVc.elementAt(tmpRow);
+		    		                  if(id.equals(client.id))
+		    		                     break;
+		    		               }
+		    		               messageAll(Function.CHAGEPOS+"|"+tmpRow+"|"+pos+"|");
 		    				}
 		    				break;
 							case Function.EXIT:
@@ -324,6 +333,15 @@ public class Server implements Runnable {
 							}
 							i++;
 						}
+						 int tmpRow;
+			               for(tmpRow=0;tmpRow<waitVc.size();tmpRow++)
+			               {
+			                  ClientThread client=waitVc.elementAt(tmpRow);
+			                  if(id.equals(client.id))
+			                     break;
+			               }
+			               messageAll(Function.CHAGEPOS+"|"+tmpRow+"|"+pos+"|");
+			               
 					}
 					break;
 					

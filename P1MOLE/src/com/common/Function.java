@@ -54,6 +54,7 @@ public class Function {
 	   public static final int GAMERESULT=650;
 	   public static final int GAMEEND=660;
 	   public static final int MYGAMEEND=670;
+	   public static final int CHAGEPOS=901;
 	   // 종료 
 	}
 

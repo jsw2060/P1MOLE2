@@ -134,8 +134,8 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 	// 서버와 연결
 	public void connection(String id, String pwd, String sex) {
 		try {
-			//s = new Socket("211.238.142.78", 9469);  //성원이꺼
-			s = new Socket("211.238.142.72", 9469);		//chjin
+			s = new Socket("211.238.142.78", 9469);  //성원이꺼
+			//s = new Socket("211.238.142.72", 9469);		//chjin
 			// s=>server
 			in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			out = s.getOutputStream();
@@ -587,7 +587,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 							moleGamePlay.pan[i].removeAll();
 							moleGamePlay.pan[i].add("Center",
 									new JLabel(new ImageIcon("image/"
-							        +(sex.equals("남자")?"M":"W")+avata+".png")));
+							        +(sex.equals("남자")?"M":"W")+".png")));
 							moleGamePlay.idtf[i].setText(name);
 							if(id.equals(rb))
 							{
@@ -688,6 +688,14 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 					
 					card.show(getContentPane(), "WR");
 				}break;
+				
+				case Function.CHAGEPOS:
+	            {
+	               int tmpRow=Integer.parseInt(st.nextToken());
+	               String tmpPos=st.nextToken();
+	               wr.table2.setValueAt(tmpPos, tmpRow, 2);
+	            }
+	            break;
 				
 				case Function.BANGCHANGE:
 				{
