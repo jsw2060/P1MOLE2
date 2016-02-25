@@ -87,10 +87,6 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 		wr.b2.addActionListener(this);
 		wr.b5.addActionListener(this);
 		wr.b6.addActionListener(this);
-/*		cr.b1.addActionListener(this);
-	    cr.b2.addActionListener(this);
-	    cr.b3.addActionListener(this);
-	    cr.tf.addActionListener(this);*/
 
 		// 방만들기 창
 		mr.b1.addActionListener(this);
@@ -131,7 +127,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 	// 서버와 연결
 	public void connection(String id, String pwd, String sex) {
 		try {
-			s = new Socket("211.238.142.79", 9469);
+			s = new Socket("211.238.142.78", 9469);
 			// s=>server
 			in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			out = s.getOutputStream();
@@ -288,13 +284,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 		{
 			mr.setVisible(false);
 		}
-/*		else if(e.getSource()==cr.b3)
-		{
-			try
-			{
-				out.write((Function.ROOMOUT+"|"+myRoom+"\n").getBytes());
-			}catch(Exception ex){}
-		}*/ else if (e.getSource() == wr.b5) {			// 정보보기
+		else if (e.getSource() == wr.b5) {			// 정보보기
 			MouseClickSound.SoundSet();
 			MouseClickSound.clip1.play();
 			card.show(getContentPane(), "GAMERULE");
@@ -359,8 +349,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 				card.show(getContentPane(), "WR");
 			}
 			
-			if(confirmPopup==JOptionPane.NO_OPTION){
-				
+			if(confirmPopup==JOptionPane.NO_OPTION){	
 			}
 		}
 		
@@ -427,12 +416,6 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 					wr.bar.setValue(wr.bar.getMaximum());
 				}
 				break;
-				
-/*				case Function.GAMECHAT1: {
-					moleGamePlay.ta.append(st.nextToken() + "\n");
-					moleGamePlay.bar.setValue(moleGamePlay.bar.getMaximum());
-				}
-				break;*/
 				
 				case Function.EXIT:
 				{
