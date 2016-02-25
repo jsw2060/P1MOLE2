@@ -13,7 +13,8 @@ public class Server implements Runnable {
 	Vector<Room>  roomVc=new Vector<Room>();	// 방에 입장해 있는 Client 저장용
 	ServerSocket ss = null;	// 서버에서 접속시 처리 (교환  소켓)
 	
-	public Server(){
+	public Server()
+	{
 		try {
 			MemberDAO dao=MemberDAO.newInstance();
 			dao.memberAllUpdate();
@@ -28,8 +29,10 @@ public class Server implements Runnable {
 	
 	public void run(){
 		//접속 처리
-		while(true){
-			try {
+		while(true)
+		{
+			try 
+			{
 				// 클라이언트의 정보 => ip, port(Socket)
 				Socket s = ss.accept();	// 클라이언트가 접속할때만 호출됨. 접속을 기다리고 있음
 				// s => client
@@ -76,33 +79,34 @@ public class Server implements Runnable {
 					StringTokenizer st = new StringTokenizer(msg, "|");		// 구분해서 잘라넴
 					int protocol = Integer.parseInt(st.nextToken());	// 번호 100번 잘라냄
 					switch (protocol) {
-					case Function.LOGIN:
-					{
-						String userid=st.nextToken();
-						String pwd=st.nextToken();
+					  case Function.LOGIN:
+					  {
+						  String userid=st.nextToken();
+	    					String pwd=st.nextToken();
 	    					
-	    				MemberDAO dao=MemberDAO.newInstance();
-	    				String res=dao.isLogin(userid, pwd);
-	    				if(res.equals("NOID"))
-	    				{
-	    					messageTo(Function.NOID+"|"+userid);
-	    				}
-	    				else if(res.equals("NOPWD"))
-	    				{
-	    					messageTo(Function.NOPWD+"|");
-	    				}
-	    				else
-	    				{
-	    					MemberDTO d=dao.memberInfoData(userid);
-	    					id=d.getId();
-	    					sex=d.getSex();
-	    					name=d.getName();
-	    					pos="대기실";
-	    					int type=d.getType();
-	    					if(type==0)
+	    					MemberDAO dao=MemberDAO.newInstance();
+	    					String res=dao.isLogin(userid, pwd);
+	    					if(res.equals("NOID"))
 	    					{
-	    						// 대기실에 있는 사람에게 정보 전송
-	    					    messageAll(Function.LOGIN+"|"+id+"|"+name+"|"+pos);
+	    						messageTo(Function.NOID+"|"+userid);
+	    					}
+	    					else if(res.equals("NOPWD"))
+	    					{
+	    						messageTo(Function.NOPWD+"|");
+	    					}
+	    					else
+	    					{
+	    					  MemberDTO d=dao.memberInfoData(userid);
+	    					  id=d.getId();
+	    					  sex=d.getSex();
+	    					  name=d.getName();
+	    					  pos="대기실";
+	    					  int type=d.getType();
+	    					  if(type==0)
+	    					  {
+	    					    // 대기실에 있는 사람에게 정보 전송
+	    					    messageAll(Function.LOGIN+"|"+id+"|"
+	    							+name+"|"+pos);
 	    					    // 저장
 	    					    waitVc.addElement(this);
 	    					    messageTo(Function.MYLOG+"|"+id);
@@ -114,15 +118,17 @@ public class Server implements Runnable {
 	    					            +client.pos);
 	    					    }
 	    					    dao.memberUpdate(id, 1);
-	    					    }
+	    					  }
+	    					  
+	    				
 	    					// 개설된 방 정보
-	    					for(Room room:roomVc)
-	    					{
-	    						messageTo(Function.MAKEROOM+"|"
+	    					  for(Room room:roomVc)
+	    					  {
+	    						  messageTo(Function.MAKEROOM+"|"
 		    							  +room.roomName+"|"+
 		    							  room.roomState+"|"+
 		    							  room.current+"/"+room.inwon);
-	    						}
+	    					  }
 	    					}
 	    				}
 	    				break;
@@ -133,7 +139,7 @@ public class Server implements Runnable {
 						}
 						break;
 						
-						case Function.ROOMCHAT:	// 게임방 내에서 채팅
+						case Function.ROOMCHAT:	// 채팅
 						{
 							String data = st.nextToken();
 							messageAll(Function.ROOMCHAT + "|[" + name + "]" + data);
@@ -209,7 +215,6 @@ public class Server implements Runnable {
 		   							     +id+"|"+name+"|"
 		   							     +sex+"|"+avata+"|"
 		   							     +room.roomBang);
-										
 							}
 							// 들어가는 사람 처리
 							messageTo(Function.MYROOMIN+"|"
@@ -218,6 +223,7 @@ public class Server implements Runnable {
 	   							     +room.roomName+"|"
 	   							     +room.roomBang);
 							room.userVc.addElement(this);
+							
 							for(ClientThread client:room.userVc)
 							{
 								if(!id.equals(client.id))
@@ -259,7 +265,6 @@ public class Server implements Runnable {
 					int i=0;
 					for(Room room:roomVc)
 					{
-						
 						if(rn.equals(room.roomName))
 						{
 							
@@ -273,7 +278,6 @@ public class Server implements Runnable {
 								client.messageTo(Function.ROOMOUT+"|"+id+"|"+name);
 										
 							}
-							
 							if(id.equals(room.roomBang))
 							{
 								if(room.current!=0)
@@ -285,28 +289,24 @@ public class Server implements Runnable {
 										if(!id.equals(client.id))
 										{
 											client.messageTo(Function.BANGCHANGE+"|"+room.roomBang+"|"+str);
-										}
-									}
+										}	
+									}	
 								}
 							}
+							
 							// 들어가는 사람 처리
 							int k=0;
 							for(ClientThread client:room.userVc)
-	                        {
-	                           System.out.println("zzzzzz->client room out4");
-	                           ClientThread user=room.userVc.elementAt(i);
-	                           if(id.equals(client.id))
-	                           {
-	                              messageTo(Function.MYROOMOUT+"|");
-	                              System.out.println("zzzzzz->client room out3");
-	                              room.userVc.removeElementAt(k);
-	                              break;
-	                           }
-	                           System.out.println("zzzzzz->client room out5");
-	                           k++;
-	                        }
+							{
+								if(id.equals(client.id))
+								{
+									messageTo(Function.MYROOMOUT+"|");
+									room.userVc.removeElementAt(k);
+									break;
+								}
+								k++;
+							}
 							
-							System.out.println("for문 나옴");
 							messageAll(Function.WAITUPDATE+"|"
 									+room.roomName+"|"
 									+room.current+"|"
@@ -323,6 +323,7 @@ public class Server implements Runnable {
 					}
 				}
 				break;
+
 				}
 				}
 					

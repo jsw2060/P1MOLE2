@@ -117,6 +117,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 		// 보너스 이미지 아이콘 버튼 리스너 추가
 		bonus.jButton.addActionListener(this);
 		
+
 		// 게임규칙(정보보기) 창
 		gr.b1.addActionListener(this);
 
@@ -125,13 +126,12 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 		
 		// 윈도우 종료버튼 선택시 아무 것도 안함
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-
-	}
+		}
 
 	// 서버와 연결
 	public void connection(String id, String pwd, String sex) {
 		try {
-			s = new Socket("211.238.142.78", 9469);
+			s = new Socket("211.238.142.85", 9469);
 			// s=>server
 			in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			out = s.getOutputStream();
@@ -363,6 +363,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 				
 			}
 		}
+		
 		else if(e.getSource()==moleGamePlay.tf)
 		{
 			String msg=moleGamePlay.tf.getText().trim();
@@ -502,6 +503,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 					String name=st.nextToken();
 					String sex=st.nextToken();
 					String avata=st.nextToken();
+				
 					myRoom=st.nextToken();
 					String rb=st.nextToken();
 					card.show(getContentPane(), "GAMEROOM");
@@ -538,7 +540,15 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 					String rb=st.nextToken();
 					card.show(getContentPane(), "GAMEROOM");
 					String[] data={id,name,sex};
-					//cr.model.addRow(data);
+					if(rb.equals(myId))
+					{
+						moleGamePlay.jButtonStn.setEnabled(true);
+					}
+					else
+					{
+						moleGamePlay.jButtonStn.setEnabled(false);
+					}
+					
 					for(int i=0;i<2;i++)
 					{
 						if(!moleGamePlay.sw[i])
@@ -624,13 +634,14 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
     						moleGamePlay.pan[i].removeAll();
     						moleGamePlay.pan[i].setLayout(new BorderLayout());
     						moleGamePlay.pan[i].add("Center",new JLabel(
-    								new ImageIcon("image/def.png")));
+    								new ImageIcon("c:\\image\\def.png")));
     						moleGamePlay.pan[i].validate();
     						break;
 						}
 					}
 				}
 				break;
+				
 				case Function.MYROOMOUT:
 				{
 					for(int i=0;i<2;i++)
@@ -645,9 +656,34 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 					}
 					moleGamePlay.ta.setText("");
 					moleGamePlay.tf.setText("");
-
+					
 					card.show(getContentPane(), "WR");
+				}break;
+				
+				case Function.BANGCHANGE:
+				{
+					String bang=st.nextToken();
+					JOptionPane.showMessageDialog(this, "방장이"+bang+"님으로 변경되었습니다");
+					for(int i=0;i<4;i++)
+					{
+						String id=moleGamePlay.idtf[i].getText();
+						moleGamePlay.idtf[i].setForeground(Color.black);
+						if(id.equals(bang))
+						{
+							moleGamePlay.idtf[i].setForeground(new Color(192,10,10));
+							break;
+						}
+					}
+					if(bang.equals(getTitle()))
+					{
+						moleGamePlay.jButtonStn.setEnabled(true);
+					}
+					else
+					{
+						moleGamePlay.jButtonStn.setEnabled(false);
+					}
 				}
+				
 				}
 			}catch (Exception ex) {}
 		}	
