@@ -14,6 +14,9 @@ import java.util.*;
 public class MoleGameView extends JPanel implements Runnable, MouseMotionListener{
 
     NotiBar notiMyBar=new NotiBar();
+    
+    //게임 종료시 나타나는 객체
+    GameOver gameOver=new GameOver();
 
     Rectangle[] rectangles=new Rectangle[9];
     Image[] molesImage=new Image[5];

@@ -32,6 +32,10 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 	
 	//게임창의 시간 알림바
 	NotiBar notibar=moleGamePlay.notiMyBar;
+	
+	//게임시간 종료시 보여지는 게임종료 객체
+	GameOver gameOver=moleGameView.gameOver;
+	
 
 	Login login = new Login();
 	WaitRoom wr = new WaitRoom();
@@ -109,6 +113,9 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 		
 		// 먹물 이벤트 리스너 연결
 		indianInk.timer.addActionListener(this);
+		
+		// 게임 종료시 나타나는 객체 리스너 추가
+		gameOver.btn.addActionListener(this);
 		
 		// 보너스 이미지 아이콘 버튼 리스너 추가
 		bonus.jButton.addActionListener(this);
@@ -392,8 +399,30 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 				
 				//게임오버 창 띄우기
 				
+				gameOver.setVisible(true);
+				moleGameView.timerVar=2500;
+				moleGameView.m_score=0;
+				moleGameView.m_combo=0;
+				moleGamePlay.jButtonStn.setEnabled(true);
+				moleGamePlay.jButtonPause.setEnabled(false);
+				moleGamePlay.jButtonRdy.setEnabled(true);
+				moleGamePlay.jButtonExit.setEnabled(true);
+				moleGamePlay.jTextPane.setText(String.valueOf("0"));
 			}
 		}
+		
+		//게임오버 버튼 이벤트  처리
+		if(e.getSource()==gameOver.btn){
+			int confirmPopup=JOptionPane.showConfirmDialog(this, "한게임 더 하실래요?", "선택", JOptionPane.YES_NO_OPTION);
+			if(confirmPopup==JOptionPane.YES_OPTION){
+				gameOver.setVisible(false);
+			}
+			if(confirmPopup==JOptionPane.NO_OPTION){
+				gameOver.setVisible(false);
+				
+			}
+		}
+		
 		
 	}
 
