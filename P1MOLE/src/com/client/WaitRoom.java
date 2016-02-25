@@ -9,7 +9,8 @@ public class WaitRoom extends JPanel implements ActionListener, MouseListener{
 	DefaultTableModel model1, model2; 		// model1=table1 모델링 , model2=table2 모델링
 	JTextArea ta; 							// 채팅창
 	JTextField tf; 							// 채팅창 입력
-	JPanel movie;							// 오전강사님 소스따온거 대채할거 생기면 대체바람
+	JLabel la;
+	//JPanel movie;							// 오전강사님 소스따온거 대채할거 생기면 대체바람
 	JButton b1, b2, b3, b4, b5, b6, b7;		// 들어갈 버튼 선언부
 	/*
 	 * 		b1 = new JButton("방만들기");
@@ -76,8 +77,10 @@ public class WaitRoom extends JPanel implements ActionListener, MouseListener{
 		tf = new JTextField(); 						// 채팅창 입력칸
 		
 		// media   없어도됨.
-		movie = new JPanel();						// 오전강사님 소스. 영상 띄울 메모리 생성
+		/*movie = new JPanel();						// 오전강사님 소스. 영상 띄울 메모리 생성
 		movie.setBackground(Color.black); 			// 오전강사님 소스. 영상배경을 검은색으로 지정
+*/		la=new JLabel(new ImageIcon("image/preview.gif"));
+		
 		
 		b1 = new JButton("방만들기");
 		b2 = new JButton("방들어가기");
@@ -105,7 +108,7 @@ public class WaitRoom extends JPanel implements ActionListener, MouseListener{
 		js2.setBounds(515, 15, 265, 230);			// table2 위치와 크기정해줌
 		js3.setBounds(10, 340, 500, 180);			// 채팅창 위치및 크기잡아줌
 		tf.setBounds(10, 530, 400, 30);				// 채팅입력란 위치 및 크기 잡아줌
-		movie.setBounds(515, 255, 265, 180);		//오전강사님 소스. 영상란 위치 및 크기잡아줌
+		la.setBounds(515, 255, 265, 180);		//오전강사님 소스. 영상란 위치 및 크기잡아줌
 		p.setBounds(515, 440, 265, 120);			//버튼 레이어 위치 및 크기 잡아줌
 		b7.setBounds(420, 530, 85, 30);				//채팅 입력 버튼 위치및 크기
 	
@@ -115,7 +118,7 @@ public class WaitRoom extends JPanel implements ActionListener, MouseListener{
 		add(tf);
 		//add(box);
 		add(b7);
-		add(movie);
+		add(la);
 		add(p);
 		
 		// 마우스 이벤트 추가

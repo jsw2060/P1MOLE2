@@ -131,7 +131,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 	// 서버와 연결
 	public void connection(String id, String pwd, String sex) {
 		try {
-			s = new Socket("211.238.142.85", 9469);
+			s = new Socket("211.238.142.79", 9469);
 			// s=>server
 			in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			out = s.getOutputStream();
@@ -517,8 +517,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 							moleGamePlay.sw[i]=true;
 							moleGamePlay.pan[i].setLayout(new BorderLayout());
 							moleGamePlay.pan[i].removeAll();
-							moleGamePlay.pan[i].add("Center", new JLabel(new ImageIcon("c:\\image\\"
-							        +(sex.equals("남자")?"m":"w")+avata+".gif")));
+							moleGamePlay.pan[i].add("Center", new JLabel(new ImageIcon("image"+"/"+(sex.equals("남자")?"M":"W")+".png")));
 							moleGamePlay.idtf[i].setText(name);
 							if(id.equals(rb))
 							{
