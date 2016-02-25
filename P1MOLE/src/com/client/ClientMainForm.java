@@ -127,8 +127,8 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 	// 서버와 연결
 	public void connection(String id, String pwd, String sex) {
 		try {
-			//s = new Socket("211.238.142.78", 9469);  성원이꺼
-			s = new Socket("211.238.142.72", 9469);		//chjin
+			s = new Socket("211.238.142.78", 9469);  //성원이꺼
+			//s = new Socket("211.238.142.72", 9469);		//chjin
 			// s=>server
 			in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			out = s.getOutputStream();
@@ -501,7 +501,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 							moleGamePlay.sw[i]=true;
 							moleGamePlay.pan[i].setLayout(new BorderLayout());
 							moleGamePlay.pan[i].removeAll();
-							moleGamePlay.pan[i].add("Center", new JLabel(new ImageIcon("image"+"/"+(sex.equals("남자")?"M":"W")+".png")));
+							moleGamePlay.pan[i].add("Center", new JLabel(new ImageIcon("image/"+(sex.equals("남자")?"M":"W")+".png")));
 							moleGamePlay.idtf[i].setText(name);
 							if(id.equals(rb))
 							{
@@ -540,8 +540,8 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 							moleGamePlay.pan[i].setLayout(new BorderLayout());
 							moleGamePlay.pan[i].removeAll();
 							moleGamePlay.pan[i].add("Center",
-									new JLabel(new ImageIcon("c:\\image\\"
-							        +(sex.equals("남자")?"m":"w")+avata+".gif")));
+									new JLabel(new ImageIcon("image/"
+							        +(sex.equals("남자")?"M":"W")+avata+".png")));
 							moleGamePlay.idtf[i].setText(name);
 							if(id.equals(rb))
 							{
@@ -617,7 +617,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
     						moleGamePlay.pan[i].removeAll();
     						moleGamePlay.pan[i].setLayout(new BorderLayout());
     						moleGamePlay.pan[i].add("Center",new JLabel(
-    								new ImageIcon("c:\\image\\def.png")));
+    								new ImageIcon("image/def.png")));
     						moleGamePlay.pan[i].validate();
     						break;
 						}
@@ -634,7 +634,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 						moleGamePlay.pan[i].removeAll();
 						moleGamePlay.pan[i].setLayout(new BorderLayout());
 						moleGamePlay.pan[i].add("Center",new JLabel(
-								new ImageIcon("c:\\image\\def.png")));
+								new ImageIcon("image/def.png")));
 						moleGamePlay.pan[i].validate();
 					}
 					moleGamePlay.ta.setText("");
