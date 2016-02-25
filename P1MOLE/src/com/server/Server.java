@@ -71,264 +71,266 @@ public class Server implements Runnable {
 		
 		// 통신 부분
 		public void run(){
-			while(true){
-				try {
-					String msg = in.readLine();		// 한줄씩 읽어들임	\n으로 구분한 이유	클라이언트가 보낸 값을 읽었다.
-					System.out.println("Client=>" + msg);
-					// 100|id|name|sex
-					StringTokenizer st = new StringTokenizer(msg, "|");		// 구분해서 잘라넴
-					int protocol = Integer.parseInt(st.nextToken());	// 번호 100번 잘라냄
-					switch (protocol) {
-					  case Function.LOGIN:
-					  {
-						  String userid=st.nextToken();
-	    					String pwd=st.nextToken();
-	    					
-	    					MemberDAO dao=MemberDAO.newInstance();
-	    					String res=dao.isLogin(userid, pwd);
-	    					if(res.equals("NOID"))
-	    					{
-	    						messageTo(Function.NOID+"|"+userid);
-	    					}
-	    					else if(res.equals("NOPWD"))
-	    					{
-	    						messageTo(Function.NOPWD+"|");
-	    					}
-	    					else
-	    					{
-	    					  MemberDTO d=dao.memberInfoData(userid);
-	    					  id=d.getId();
-	    					  sex=d.getSex();
-	    					  name=d.getName();
-	    					  pos="대기실";
-	    					  int type=d.getType();
-	    					  if(type==0)
-	    					  {
-	    					    // 대기실에 있는 사람에게 정보 전송
-	    					    messageAll(Function.LOGIN+"|"+id+"|"
-	    							+name+"|"+pos);
-	    					    // 저장
-	    					    waitVc.addElement(this);
-	    					    messageTo(Function.MYLOG+"|"+id);
-	    					    for(ClientThread client:waitVc)
-	    					    {
-	    						  messageTo(Function.LOGIN+"|"
-	    					            +client.id+"|"
-		    							+client.name+"|"
-	    					            +client.pos);
-	    					    }
-	    					    dao.memberUpdate(id, 1);
-	    					  }
-	    					  
-	    				
-	    					// 개설된 방 정보
-	    					  for(Room room:roomVc)
-	    					  {
-	    						  messageTo(Function.MAKEROOM+"|"
+			try{
+				while(true){
+						String msg = in.readLine();		// 한줄씩 읽어들임	\n으로 구분한 이유	클라이언트가 보낸 값을 읽었다.
+						System.out.println("Client=>" + msg);
+						// 100|id|name|sex
+						StringTokenizer st = new StringTokenizer(msg, "|");		// 구분해서 잘라넴
+						int protocol = Integer.parseInt(st.nextToken());	// 번호 100번 잘라냄
+						switch (protocol) {
+						  case Function.LOGIN:
+						  {
+							  String userid=st.nextToken();
+		    					String pwd=st.nextToken();
+		    					
+		    					MemberDAO dao=MemberDAO.newInstance();
+		    					String res=dao.isLogin(userid, pwd);
+		    					if(res.equals("NOID"))
+		    					{
+		    						messageTo(Function.NOID+"|"+userid);
+		    					}
+		    					else if(res.equals("NOPWD"))
+		    					{
+		    						messageTo(Function.NOPWD+"|");
+		    					}
+		    					else
+		    					{
+		    					  MemberDTO d=dao.memberInfoData(userid);
+		    					  id=d.getId();
+		    					  sex=d.getSex();
+		    					  name=d.getName();
+		    					  pos="대기실";
+		    					  int type=d.getType();
+		    					  if(type==0)
+		    					  {
+		    					    // 대기실에 있는 사람에게 정보 전송
+		    					    messageAll(Function.LOGIN+"|"+id+"|"
+		    							+name+"|"+pos);
+		    					    // 저장
+		    					    waitVc.addElement(this);
+		    					    messageTo(Function.MYLOG+"|"+id);
+		    					    for(ClientThread client:waitVc)
+		    					    {
+		    						  messageTo(Function.LOGIN+"|"
+		    					            +client.id+"|"
+			    							+client.name+"|"
+		    					            +client.pos);
+		    					    }
+		    					    dao.memberUpdate(id, 1);
+		    					  }
+		    					  
+		    				
+		    					// 개설된 방 정보
+		    					  for(Room room:roomVc)
+		    					  {
+		    						  messageTo(Function.MAKEROOM+"|"
+			    							  +room.roomName+"|"+
+			    							  room.roomState+"|"+
+			    							  room.current+"/"+room.inwon);
+		    					  }
+		    					}
+		    				}
+		    				break;
+							case Function.WAITCHAT:	// 채팅
+							{
+								String data = st.nextToken();
+								messageAll(Function.WAITCHAT + "|[" + name + "]" + data);
+							}
+							break;
+							
+							case Function.ROOMCHAT:	// 채팅
+							{
+								String data = st.nextToken();
+								messageAll(Function.ROOMCHAT + "|[" + name + "]" + data);
+							}
+							break;
+							
+							case Function.MAKEROOM:
+							{
+		    					Room room=new Room(st.nextToken(),
+		    							  st.nextToken(),st.nextToken(),
+		    							  Integer.parseInt(st.nextToken()));
+		    					
+		    					messageAll(Function.MAKEROOM+"|"
 		    							  +room.roomName+"|"+
 		    							  room.roomState+"|"+
 		    							  room.current+"/"+room.inwon);
-	    					  }
-	    					}
-	    				}
-	    				break;
-						case Function.WAITCHAT:	// 채팅
-						{
-							String data = st.nextToken();
-							messageAll(Function.WAITCHAT + "|[" + name + "]" + data);
-						}
-						break;
-						
-						case Function.ROOMCHAT:	// 채팅
-						{
-							String data = st.nextToken();
-							messageAll(Function.ROOMCHAT + "|[" + name + "]" + data);
-						}
-						break;
-						
-						case Function.MAKEROOM:
-						{
-	    					Room room=new Room(st.nextToken(),
-	    							  st.nextToken(),st.nextToken(),
-	    							  Integer.parseInt(st.nextToken()));
-	    					
-	    					messageAll(Function.MAKEROOM+"|"
-	    							  +room.roomName+"|"+
-	    							  room.roomState+"|"+
-	    							  room.current+"/"+room.inwon);
-	    					
-	    					room.roomBang=id;
-	    					pos=room.roomName;
-	    					room.userVc.addElement(this);
-	    					roomVc.addElement(room);
-	    					messageTo(Function.MYROOMIN+"|"
-	   							     +id+"|"+name+"|"
-	   							     +sex+"|"+avata+"|"
-	   							     +room.roomName+"|"
-	   							     +room.roomBang);
-	    					messageAll(Function.POSCHANGE+"|"+id+"|"+pos);
-	    				}
-	    				break;
-						case Function.EXIT:
-						{
-							messageAll(Function.EXIT+"|"+id);
-	    					messageTo(Function.MYCHATEND+"|");
-	    					for(int i=0;i<waitVc.size();i++)
-	    					{
-	    						ClientThread client=waitVc.elementAt(i);
-	    						if(id.equals(client.id))
-	    						{
-	    							waitVc.removeElementAt(i);
-	    							in.close();
-	    							out.close();
-	    							break;
-	    						}
-	    					}
-						}
-					
-				case Function.MYROOMIN:
-				{
-					/*
-					 *   1. 방을 찾기
-					 *   2. 위치변경
-					 *   3. 현재인원 증가 
-					 *   4. 들어가 있는 사람
-					 *      = 들어가는 사람의 정보
-					 *      = 입장메세지 
-					 *   5. 들어가는 사람
-					 *      = 대기실=>채팅방으로 변경
-					 *      = 들어가 있는 사람들의 정보 
-					 *   6. 대기실
-					 */
-					String rn=st.nextToken();
-					for(Room room:roomVc)
-					{
-						if(rn.equals(room.roomName))
-						{
-							room.current++;
-							pos=room.roomName;
-							for(ClientThread client:room.userVc)
-							{
-								client.messageTo(Function.ROOMCHAT
-										+"|[알림 ☞"+name+"님이 입장하셨습니다]");
-								client.messageTo(Function.ROOMIN+"|"
+		    					
+		    					room.roomBang=id;
+		    					pos=room.roomName;
+		    					room.userVc.addElement(this);
+		    					roomVc.addElement(room);
+		    					messageTo(Function.MYROOMIN+"|"
 		   							     +id+"|"+name+"|"
 		   							     +sex+"|"+avata+"|"
+		   							     +room.roomName+"|"
 		   							     +room.roomBang);
-							}
-							// 들어가는 사람 처리
-							messageTo(Function.MYROOMIN+"|"
-	   							     +id+"|"+name+"|"
-	   							     +sex+"|"+avata+"|"
-	   							     +room.roomName+"|"
-	   							     +room.roomBang);
-							room.userVc.addElement(this);
-							
-							for(ClientThread client:room.userVc)
+		    					messageAll(Function.POSCHANGE+"|"+id+"|"+pos);
+		    				}
+		    				break;
+							case Function.EXIT:
 							{
-								if(!id.equals(client.id))
-								{
-									messageTo(Function.ROOMIN+"|"
-    		   							     +client.id+"|"
-											 +client.name+"|"
-    		   							     +client.sex+"|"
-											 +client.avata+"|"
-    		   							     +room.roomBang);
-								}
+								messageAll(Function.EXIT+"|"+id);
+		    					messageTo(Function.MYCHATEND+"|");
+		    					for(int i=0;i<waitVc.size();i++)
+		    					{
+		    						ClientThread client=waitVc.elementAt(i);
+		    						if(id.equals(client.id))
+		    						{
+		    							waitVc.removeElementAt(i);
+		    							in.close();
+		    							out.close();
+		    							break;
+		    						}
+		    					}
 							}
-							messageAll(Function.WAITUPDATE+"|"
-									+room.roomName+"|"
-									+room.current+"|"
-									+room.inwon+"|"
-									+id+"|"
-									+pos);
+						
+					case Function.MYROOMIN:
+					{
+						/*
+						 *   1. 방을 찾기
+						 *   2. 위치변경
+						 *   3. 현재인원 증가 
+						 *   4. 들어가 있는 사람
+						 *      = 들어가는 사람의 정보
+						 *      = 입장메세지 
+						 *   5. 들어가는 사람
+						 *      = 대기실=>채팅방으로 변경
+						 *      = 들어가 있는 사람들의 정보 
+						 *   6. 대기실
+						 */
+						String rn=st.nextToken();
+						for(Room room:roomVc)
+						{
+							if(rn.equals(room.roomName))
+							{
+								room.current++;
+								pos=room.roomName;
+								for(ClientThread client:room.userVc)
+								{
+									client.messageTo(Function.ROOMCHAT
+											+"|[알림 ☞"+name+"님이 입장하셨습니다]");
+									client.messageTo(Function.ROOMIN+"|"
+			   							     +id+"|"+name+"|"
+			   							     +sex+"|"+avata+"|"
+			   							     +room.roomBang);
+								}
+								// 들어가는 사람 처리
+								messageTo(Function.MYROOMIN+"|"
+		   							     +id+"|"+name+"|"
+		   							     +sex+"|"+avata+"|"
+		   							     +room.roomName+"|"
+		   							     +room.roomBang);
+								room.userVc.addElement(this);
+								
+								for(ClientThread client:room.userVc)
+								{
+									if(!id.equals(client.id))
+									{
+										messageTo(Function.ROOMIN+"|"
+	    		   							     +client.id+"|"
+												 +client.name+"|"
+	    		   							     +client.sex+"|"
+												 +client.avata+"|"
+	    		   							     +room.roomBang);
+									}
+								}
+								messageAll(Function.WAITUPDATE+"|"
+										+room.roomName+"|"
+										+room.current+"|"
+										+room.inwon+"|"
+										+id+"|"
+										+pos);
+							}
 						}
 					}
-				}
-				break;
+					break;
 
-				case Function.ROOMOUT:
-				{
-					/*
-					 *   1. 방을 찾기
-					 *   2. 위치변경
-					 *   3. 현재인원 증가 
-					 *   4. 들어가 있는 사람
-					 *      = 들어가는 사람의 정보
-					 *      = 입장메세지 
-					 *   5. 들어가는 사람
-					 *      = 대기실=>채팅방으로 변경
-					 *      = 들어가 있는 사람들의 정보 
-					 *   6. 대기실
-					 */
-					String rn=st.nextToken();
-					int i=0;
-					for(Room room:roomVc)
+					case Function.ROOMOUT:
 					{
-						if(rn.equals(room.roomName))
+						/*
+						 *   1. 방을 찾기
+						 *   2. 위치변경
+						 *   3. 현재인원 증가 
+						 *   4. 들어가 있는 사람
+						 *      = 들어가는 사람의 정보
+						 *      = 입장메세지 
+						 *   5. 들어가는 사람
+						 *      = 대기실=>채팅방으로 변경
+						 *      = 들어가 있는 사람들의 정보 
+						 *   6. 대기실
+						 */
+						String rn=st.nextToken();
+						int i=0;
+						for(Room room:roomVc)
 						{
-							
-							room.current--;
-							pos="대기실";
-							
-							for(ClientThread client:room.userVc)
+							if(rn.equals(room.roomName))
 							{
-								client.messageTo(Function.ROOMCHAT
-										+"|[알림 ☞"+name+"님이 퇴장하셨습니다]");
-								client.messageTo(Function.ROOMOUT+"|"+id+"|"+name);
-										
-							}
-							if(id.equals(room.roomBang))
-							{
-								if(room.current!=0)
+								
+								room.current--;
+								pos="대기실";
+								
+								for(ClientThread client:room.userVc)
 								{
-									room.roomBang=room.userVc.elementAt(1).id;
-									String str=room.userVc.elementAt(1).name;
-									for(ClientThread client:room.userVc)
-									{
-										if(!id.equals(client.id))
-										{
-											client.messageTo(Function.BANGCHANGE+"|"+room.roomBang+"|"+str);
-										}	
-									}	
+									client.messageTo(Function.ROOMCHAT
+											+"|[알림 ☞"+name+"님이 퇴장하셨습니다]");
+									client.messageTo(Function.ROOMOUT+"|"+id+"|"+name);
+											
 								}
-							}
-							
-							// 들어가는 사람 처리
-							int k=0;
-							for(ClientThread client:room.userVc)
-							{
-								if(id.equals(client.id))
+								if(id.equals(room.roomBang))
 								{
-									messageTo(Function.MYROOMOUT+"|");
-									room.userVc.removeElementAt(k);
+									if(room.current!=0)
+									{
+										room.roomBang=room.userVc.elementAt(1).id;
+										String str=room.userVc.elementAt(1).name;
+										for(ClientThread client:room.userVc)
+										{
+											if(!id.equals(client.id))
+											{
+												client.messageTo(Function.BANGCHANGE+"|"+room.roomBang+"|"+str);
+											}	
+										}	
+									}
+								}
+								
+								// 들어가는 사람 처리
+								int k=0;
+								for(ClientThread client:room.userVc)
+								{
+									if(id.equals(client.id))
+									{
+										messageTo(Function.MYROOMOUT+"|");
+										room.userVc.removeElementAt(k);
+										break;
+									}
+									k++;
+								}
+								
+								messageAll(Function.WAITUPDATE+"|"
+										+room.roomName+"|"
+										+room.current+"|"
+										+room.inwon+"|"
+										+id+"|"
+										+pos);
+								if(room.current<1)
+								{
+									roomVc.removeElementAt(i);
 									break;
 								}
-								k++;
 							}
-							
-							messageAll(Function.WAITUPDATE+"|"
-									+room.roomName+"|"
-									+room.current+"|"
-									+room.inwon+"|"
-									+id+"|"
-									+pos);
-							if(room.current<1)
-							{
-								roomVc.removeElementAt(i);
-								break;
-							}
+							i++;
 						}
-						i++;
 					}
-				}
-				break;
+					break;
 
+					}
+				
 				}
-				}
-					
-				 catch (Exception ex) {}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
+
 				 
 		}
 		

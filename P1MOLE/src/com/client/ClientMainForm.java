@@ -413,7 +413,7 @@ public class ClientMainForm extends JFrame implements ActionListener, Runnable, 
 		
 		//게임오버 버튼 이벤트  처리
 		if(e.getSource()==gameOver.btn){
-			int confirmPopup=JOptionPane.showConfirmDialog(this, "한게임 더 하실래요?", "선택", JOptionPane.YES_NO_OPTION);
+			int confirmPopup=JOptionPane.showConfirmDialog(this, "맛보기가 끝났습니다.한게임 하실래요?", "선택", JOptionPane.YES_NO_OPTION);
 			if(confirmPopup==JOptionPane.YES_OPTION){
 				gameOver.setVisible(false);
 			}
