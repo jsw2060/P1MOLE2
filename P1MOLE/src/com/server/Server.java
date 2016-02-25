@@ -1,11 +1,14 @@
 package com.server;
 import java.util.*;
 
+import com.client.Rectangle;
 import com.common.Function;
 import com.sist.dao.MemberDAO;
 import com.sist.dao.MemberDTO;
 
 import java.net.*;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.*;
 
 public class Server implements Runnable {
@@ -323,8 +326,53 @@ public class Server implements Runnable {
 						}
 					}
 					break;
-
+					
+					//게임래디 추가 부분.
+					case Function.GAMEREADY:{
+						String yid=st.nextToken();
+						int ready=Integer.parseInt(st.nextToken());
+						
+						for(ClientThread user:waitVc){
+							if(yid.equals(user.id)){
+								user.messageTo(Function.GAMEREADY +"|"+ ready);
+								break;
+							}
+						}							
 					}
+					
+					//게임스타트 추가.
+					case Function.GAMESTART:{
+						String yid=st.nextToken();
+						
+						//공유 데이터 메시지로 작성하기-스코어만
+						
+						Image[] myMolesImage=new Image[5];
+						Image[] youMolesImage=new Image[5];
+						
+						String myMsg="";
+						String youMsg="";
+						
+					    String[] stringsImage={
+					            "image/mole1.png","image/mole2.png",
+					            "image/mole3.png","image/mole4.png",
+					            ""
+					        };
+						
+				        for(int i=0;i<5;i++){
+				        	myMolesImage[i]=Toolkit.getDefaultToolkit().getImage(stringsImage[i]);
+				        	youMolesImage[i]=Toolkit.getDefaultToolkit().getImage(stringsImage[i]);
+				        }
+				        
+				        
+						
+						for(ClientThread user:waitVc){
+							if(yid.equals(user.id)){
+								messageTo(Function.GAMESTART +"|" );
+							}
+						}
+						
+					}
+				}
 				
 				}
 			}catch(Exception e){
